@@ -22,6 +22,10 @@ const upload = multer({ storage: multer.memoryStorage() });
 const PORT = process.env.PORT || 5001;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
+
+console.log("EMAIL_USER:", process.env.EMAIL_USER);
+console.log("EMAIL_PASS LENGTH:", process.env.EMAIL_PASS?.length);
+
 // Nodemailer Transporter Configuration
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
