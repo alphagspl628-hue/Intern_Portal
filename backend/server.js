@@ -27,15 +27,22 @@ console.log("EMAIL_USER:", process.env.EMAIL_USER);
 console.log("EMAIL_PASS LENGTH:", process.env.EMAIL_PASS?.length);
 
 // Nodemailer Transporter Configuration
+const dns = require('dns');
+
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: 'smtp.gmail.com',
   port: 587,
   secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  family: 4
+
+  lookup: (hostname, options, callback) => {
+    dns.lookup(hostname, { family: 4 }, callback);
+  },
+
+  connectionTimeout: 10000
 });
 
 app.get("/verify-mail", async (req, res) => {
