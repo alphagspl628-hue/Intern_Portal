@@ -38,6 +38,44 @@ const transporter = nodemailer.createTransport({
   family: 4
 });
 
+app.get("/verify-mail", async (req, res) => {
+  try {
+    const nodemailer = require("nodemailer");
+
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+
+    transporter.verify((err, success) => {
+      console.log("VERIFY RESULT:");
+      console.log(err || success);
+
+      if (err) {
+        return res.status(500).json({
+          success: false,
+          error: err.message,
+          code: err.code
+        });
+      }
+
+      return res.json({
+        success: true,
+        message: "SMTP connection successful"
+      });
+    });
+
+  } catch (e) {
+    console.error(e);
+    res.status(500).send(e.message);
+  }
+});
+
 // Coerce a date/datetime value into the full ISO form PocketBase's `date` field
 // accepts. The meeting forms send a datetime-local value like "2026-07-01T14:30"
 // (no seconds, no timezone), which PocketBase silently rejects and stores as an

@@ -10,3 +10,5 @@ pocketbase
 # GCS service-account key
 gcs-service-account.json
 *-service-account.json
+
+testmail.js
