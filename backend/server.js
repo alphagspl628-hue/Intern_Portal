@@ -24,11 +24,14 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
 // Nodemailer Transporter Configuration
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
   auth: {
-    user: 'alphagspl628@gmail.com',
-    pass: 'erapcngyyobthtoj'
-  }
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+  family: 4
 });
 
 // Coerce a date/datetime value into the full ISO form PocketBase's `date` field
