@@ -4,9 +4,10 @@ uploads/
 .DS_Store
 
 # PocketBase runtime data + binary
-pb_data/
+# pb_data/
 pocketbase
 
 # GCS service-account key
 gcs-service-account.json
 *-service-account.json
+testmail.js

@@ -22,12 +22,63 @@ const upload = multer({ storage: multer.memoryStorage() });
 const PORT = process.env.PORT || 5001;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
+console.log("EMAIL_USER:", process.env.EMAIL_USER);
+console.log("EMAIL_PASS LENGTH:", process.env.EMAIL_PASS?.length);
+
 // Nodemailer Transporter Configuration
+const dns = require('dns');
+
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
   auth: {
-    user: 'alphagspl628@gmail.com',
-    pass: 'erapcngyyobthtoj'
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+
+  lookup: (hostname, options, callback) => {
+    dns.lookup(hostname, { family: 4 }, callback);
+  },
+
+  connectionTimeout: 10000
+});
+
+app.get("/verify-mail", async (req, res) => {
+  try {
+    const nodemailer = require("nodemailer");
+
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+
+    transporter.verify((err, success) => {
+      console.log("VERIFY RESULT:");
+      console.log(err || success);
+
+      if (err) {
+        return res.status(500).json({
+          success: false,
+          error: err.message,
+          code: err.code
+        });
+      }
+
+      return res.json({
+        success: true,
+        message: "SMTP connection successful"
+      });
+    });
+
+  } catch (e) {
+    console.error(e);
+    res.status(500).send(e.message);
   }
 });
 
