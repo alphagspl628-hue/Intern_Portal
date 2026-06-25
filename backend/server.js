@@ -258,7 +258,7 @@ app.post('/api/applications', upload.fields([{ name: 'resume', maxCount: 1 }]), 
     });
 
     const mailOptions = {
-      from: '"GSPL Team" <alphagspl628@gmail.com>',
+      from: process.env.EMAIL_FROM,
       to: email,
       subject: `Your application to GSPL — Received`,
       html: `
@@ -341,7 +341,7 @@ app.post('/api/applications/:id/approve', async (req, res) => {
     await pb.collection('applications').update(application.id, patch);
 
     const mailOptions = {
-      from: '"GSPL Team" <alphagspl628@gmail.com>',
+      from: process.env.EMAIL_FROM,
       to: application.email,
       subject: `Congratulations — You've been selected at GSPL!`,
       html: `
@@ -389,7 +389,7 @@ async function handleLeaderRemoval(pb, oldLeaderId) {
         members.forEach(m => {
           if (!m.email) return;
           transporter.sendMail({
-            from: '"GSPL Team" <alphagspl628@gmail.com>',
+            from: process.env.EMAIL_FROM,
             to: m.email,
             subject: `Leadership Change — ${tm.name}`,
             html: `<div style="font-family: sans-serif; color: #333;"><p>Hi ${m.name},</p><p>The previous Team Leader for <strong>${tm.name}</strong> has left or been removed.</p><p><strong>${vtlApp.name}</strong> (the Vice Team Leader) has automatically been promoted to be your new Team Leader.</p><strong><p>Warm regards,<br>The GSPL Team</p></strong></div>`
@@ -401,7 +401,7 @@ async function handleLeaderRemoval(pb, oldLeaderId) {
       members.forEach(m => {
         if (!m.email) return;
         transporter.sendMail({
-          from: '"GSPL Team" <alphagspl628@gmail.com>',
+          from: process.env.EMAIL_FROM,
           to: m.email,
           subject: `Leadership Change — ${tm.name}`,
           html: `<div style="font-family: sans-serif; color: #333;"><p>Hi ${m.name},</p><p>The previous Team Leader for <strong>${tm.name}</strong> has left or been removed. Your team currently does not have a Team Leader.</p><strong><p>Warm regards,<br>The GSPL Team</p></strong></div>`
@@ -479,7 +479,7 @@ app.post('/api/applications/:id/promote-leader', async (req, res) => {
     const updated = await pb.collection('applications').getOne(application.id);
 
     const mailOptions = {
-      from: '"GSPL Team" <alphagspl628@gmail.com>',
+      from: process.env.EMAIL_FROM,
       to: updated.email,
       subject: `You've been selected as a Team Leader at GSPL!`,
       html: `
@@ -520,7 +520,7 @@ app.post('/api/applications/:id/demote-leader', async (req, res) => {
       
       // Email the demoted TL
       const mailOptions = {
-        from: '"GSPL Team" <alphagspl628@gmail.com>',
+        from: process.env.EMAIL_FROM,
         to: application.email,
         subject: `Leadership Change at GSPL`,
         html: `
@@ -802,7 +802,7 @@ app.patch('/api/teams/:id', async (req, res) => {
         html += `</ul><p>Please log in to your dashboard to view the latest team structure.</p><strong><p>Warm regards,<br>The GSPL Team</p></strong></div>`;
 
         transporter.sendMail({
-          from: '"GSPL Team" <alphagspl628@gmail.com>',
+          from: process.env.EMAIL_FROM,
           to: m.email,
           subject: `Team Leadership Update — ${team.name}`,
           html
@@ -908,7 +908,7 @@ app.post('/api/meetings', async (req, res) => {
     recipients.forEach(({ name, email }) => {
       if (!email) return;
       const mailOptions = {
-        from: '"GSPL Team" <alphagspl628@gmail.com>',
+        from: process.env.EMAIL_FROM,
         to: email,
         subject: `Meeting scheduled — ${title}`,
         html: `
