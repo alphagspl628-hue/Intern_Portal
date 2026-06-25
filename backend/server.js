@@ -26,22 +26,12 @@ console.log("EMAIL_USER:", process.env.EMAIL_USER);
 console.log("EMAIL_PASS LENGTH:", process.env.EMAIL_PASS?.length);
 
 // Nodemailer Transporter Configuration
-const dns = require('dns');
-
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
+  service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
-  },
-
-  lookup: (hostname, options, callback) => {
-    dns.lookup(hostname, { family: 4 }, callback);
-  },
-
-  connectionTimeout: 10000
+  }
 });
 
 app.get("/verify-mail", async (req, res) => {
@@ -49,9 +39,7 @@ app.get("/verify-mail", async (req, res) => {
     const nodemailer = require("nodemailer");
 
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
+      service: "gmail",
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -258,7 +246,7 @@ app.post('/api/applications', upload.fields([{ name: 'resume', maxCount: 1 }]), 
     });
 
     const mailOptions = {
-      from: process.env.EMAIL_FROM,
+      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
       to: email,
       subject: `Your application to GSPL — Received`,
       html: `
@@ -341,7 +329,7 @@ app.post('/api/applications/:id/approve', async (req, res) => {
     await pb.collection('applications').update(application.id, patch);
 
     const mailOptions = {
-      from: process.env.EMAIL_FROM,
+      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
       to: application.email,
       subject: `Congratulations — You've been selected at GSPL!`,
       html: `
@@ -389,7 +377,7 @@ async function handleLeaderRemoval(pb, oldLeaderId) {
         members.forEach(m => {
           if (!m.email) return;
           transporter.sendMail({
-            from: process.env.EMAIL_FROM,
+            from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
             to: m.email,
             subject: `Leadership Change — ${tm.name}`,
             html: `<div style="font-family: sans-serif; color: #333;"><p>Hi ${m.name},</p><p>The previous Team Leader for <strong>${tm.name}</strong> has left or been removed.</p><p><strong>${vtlApp.name}</strong> (the Vice Team Leader) has automatically been promoted to be your new Team Leader.</p><strong><p>Warm regards,<br>The GSPL Team</p></strong></div>`
@@ -401,7 +389,7 @@ async function handleLeaderRemoval(pb, oldLeaderId) {
       members.forEach(m => {
         if (!m.email) return;
         transporter.sendMail({
-          from: process.env.EMAIL_FROM,
+          from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
           to: m.email,
           subject: `Leadership Change — ${tm.name}`,
           html: `<div style="font-family: sans-serif; color: #333;"><p>Hi ${m.name},</p><p>The previous Team Leader for <strong>${tm.name}</strong> has left or been removed. Your team currently does not have a Team Leader.</p><strong><p>Warm regards,<br>The GSPL Team</p></strong></div>`
@@ -479,7 +467,7 @@ app.post('/api/applications/:id/promote-leader', async (req, res) => {
     const updated = await pb.collection('applications').getOne(application.id);
 
     const mailOptions = {
-      from: process.env.EMAIL_FROM,
+      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
       to: updated.email,
       subject: `You've been selected as a Team Leader at GSPL!`,
       html: `
@@ -520,7 +508,7 @@ app.post('/api/applications/:id/demote-leader', async (req, res) => {
       
       // Email the demoted TL
       const mailOptions = {
-        from: process.env.EMAIL_FROM,
+        from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
         to: application.email,
         subject: `Leadership Change at GSPL`,
         html: `
@@ -802,7 +790,7 @@ app.patch('/api/teams/:id', async (req, res) => {
         html += `</ul><p>Please log in to your dashboard to view the latest team structure.</p><strong><p>Warm regards,<br>The GSPL Team</p></strong></div>`;
 
         transporter.sendMail({
-          from: process.env.EMAIL_FROM,
+          from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
           to: m.email,
           subject: `Team Leadership Update — ${team.name}`,
           html
@@ -908,7 +896,7 @@ app.post('/api/meetings', async (req, res) => {
     recipients.forEach(({ name, email }) => {
       if (!email) return;
       const mailOptions = {
-        from: process.env.EMAIL_FROM,
+        from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
         to: email,
         subject: `Meeting scheduled — ${title}`,
         html: `
