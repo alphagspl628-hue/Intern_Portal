@@ -1,0 +1,12 @@
+node_modules/
+.env
+uploads/
+.DS_Store
+
+# PocketBase runtime data + binary
+pb_data/
+pocketbase
+
+# GCS service-account key
+gcs-service-account.json
+*-service-account.json
