@@ -25,49 +25,34 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 console.log("EMAIL_USER:", process.env.EMAIL_USER);
 console.log("EMAIL_PASS LENGTH:", process.env.EMAIL_PASS?.length);
 
-// Nodemailer Transporter Configuration
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+// Nodemailer Transporter Configuration (Replaced by Vercel Proxy)
+async function sendMailProxy(options, callback) {
+  const proxyUrl = process.env.VERCEL_MAIL_URL || 'https://intern-portal-flame.vercel.app/api/sendMail';
+  try {
+    const response = await fetch(proxyUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: options.to,
+        subject: options.subject,
+        html: options.html,
+        secret: process.env.MAIL_SECRET_KEY
+      })
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      if (callback) callback(new Error(result.error), null);
+      return;
+    }
+    if (callback) callback(null, result.info);
+  } catch (err) {
+    console.error('sendMailProxy error:', err);
+    if (callback) callback(err, null);
   }
-});
+}
 
 app.get("/verify-mail", async (req, res) => {
-  try {
-    const nodemailer = require("nodemailer");
-
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
-
-    transporter.verify((err, success) => {
-      console.log("VERIFY RESULT:");
-      console.log(err || success);
-
-      if (err) {
-        return res.status(500).json({
-          success: false,
-          error: err.message,
-          code: err.code
-        });
-      }
-
-      return res.json({
-        success: true,
-        message: "SMTP connection successful"
-      });
-    });
-
-  } catch (e) {
-    console.error(e);
-    res.status(500).send(e.message);
-  }
+  res.send("<p>Vercel Email Proxy Configured. Please ensure VERCEL_MAIL_URL and MAIL_SECRET_KEY are set.</p>");
 });
 
 // Coerce a date/datetime value into the full ISO form PocketBase's `date` field
@@ -259,7 +244,7 @@ app.post('/api/applications', upload.fields([{ name: 'resume', maxCount: 1 }]), 
         </div>
       `
     };
-    transporter.sendMail(mailOptions, (error, info) => {
+    sendMailProxy(mailOptions, (error, info) => {
       if (error) console.error('Error sending confirmation email:', error);
       else console.log('Confirmation email sent successfully:', info.response);
     });
@@ -343,7 +328,7 @@ app.post('/api/applications/:id/approve', async (req, res) => {
         </div>
       `
     };
-    transporter.sendMail(mailOptions, (error, info) => {
+    sendMailProxy(mailOptions, (error, info) => {
       if (error) console.error('Error sending approval email:', error);
       else console.log('Approval email sent:', info.response);
     });
@@ -376,7 +361,7 @@ async function handleLeaderRemoval(pb, oldLeaderId) {
         const members = await resolveInterns(pb, tm.members || []);
         members.forEach(m => {
           if (!m.email) return;
-          transporter.sendMail({
+          sendMailProxy({
             from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
             to: m.email,
             subject: `Leadership Change — ${tm.name}`,
@@ -388,7 +373,7 @@ async function handleLeaderRemoval(pb, oldLeaderId) {
       const members = await resolveInterns(pb, tm.members || []);
       members.forEach(m => {
         if (!m.email) return;
-        transporter.sendMail({
+        sendMailProxy({
           from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
           to: m.email,
           subject: `Leadership Change — ${tm.name}`,
@@ -481,7 +466,7 @@ app.post('/api/applications/:id/promote-leader', async (req, res) => {
         </div>
       `
     };
-    transporter.sendMail(mailOptions, (error, info) => {
+    sendMailProxy(mailOptions, (error, info) => {
       if (error) console.error('Error sending promotion email:', error);
       else console.log('Promotion email sent:', info.response);
     });
@@ -521,7 +506,7 @@ app.post('/api/applications/:id/demote-leader', async (req, res) => {
           </div>
         `
       };
-      transporter.sendMail(mailOptions, (error) => {
+      sendMailProxy(mailOptions, (error) => {
         if (error) console.error('Error sending demotion email:', error);
       });
     }
@@ -789,7 +774,7 @@ app.patch('/api/teams/:id', async (req, res) => {
         }
         html += `</ul><p>Please log in to your dashboard to view the latest team structure.</p><strong><p>Warm regards,<br>The GSPL Team</p></strong></div>`;
 
-        transporter.sendMail({
+        sendMailProxy({
           from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
           to: m.email,
           subject: `Team Leadership Update — ${team.name}`,
@@ -922,7 +907,7 @@ app.post('/api/meetings', async (req, res) => {
           </div>
         `
       };
-      transporter.sendMail(mailOptions, (error) => {
+      sendMailProxy(mailOptions, (error) => {
         if (error) console.error('Error sending meeting email:', error);
       });
     });
