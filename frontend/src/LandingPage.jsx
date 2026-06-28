@@ -203,7 +203,7 @@ const LandingPage = () => {
               <h2 className="font-headline-lg text-headline-lg text-on-surface mb-4">Why Join Us?</h2>
               <p className="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">It’s more than just an internship. It’s the launchpad for your career.</p>
             </div>
-            <div className="flex flex-col md:flex-row justify-center items-stretch gap-16 md:gap-8 relative mt-16 md:mt-20">
+            <div className="flex flex-col md:flex-row justify-center items-stretch gap-8 relative mt-20">
               <div className="bg-surface rounded-[2rem] p-8 w-full md:w-1/3 ambient-shadow transform md:-translate-y-8 hover:-translate-y-12 transition-transform duration-300 relative border border-white/50">
                 <div className="absolute -top-10 left-8 w-20 h-20 bg-secondary-container rounded-full flex items-center justify-center ambient-shadow">
                   <span className="material-symbols-outlined text-on-secondary-container text-4xl icon-fill">psychology</span>
