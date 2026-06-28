@@ -218,7 +218,7 @@ const LandingPage = () => {
                 <h3 className="font-headline-md text-headline-md text-on-surface mt-8 mb-4">Real-world Projects</h3>
                 <p className="font-body-md text-body-md text-on-surface-variant">No sandbox assignments here. You'll contribute to live projects impacting real users.</p>
               </div>
-              <div className="bg-surface rounded-[2rem] p-8 w-full md:w-1/3 ambient-shadow transform md:-translate-y-4 hover:-translate-y-8 transition-transform duration-300 relative border border-white/50">
+              <div className="bg-surface rounded-[2rem] p-8 w-full md:w-1/3 ambient-shadow transform md:-translate-y-4 hover:-translate-y-8 transition-transform duration-300 relative border border-white/50 z-20">
                 <div className="absolute -top-10 left-8 w-20 h-20 bg-tertiary-container rounded-full flex items-center justify-center ambient-shadow">
                   <span className="material-symbols-outlined text-on-tertiary-container text-4xl icon-fill">trending_up</span>
                 </div>
