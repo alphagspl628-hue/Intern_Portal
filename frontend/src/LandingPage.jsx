@@ -121,7 +121,7 @@ const LandingPage = () => {
             <div className="lg:col-span-7 flex flex-col justify-center items-start space-y-stack-md z-20">
               <div className="inline-flex items-center px-4 py-2 rounded-full bg-secondary-container/10 text-secondary font-label-bold text-label-bold mb-4 border border-secondary-container/30">
                 <span className="material-symbols-outlined text-sm mr-2 icon-fill">stars</span>
-                Internship Program 2024
+                Internship Program 2026
               </div>
               <h1 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface">
                 Ready to build the <span className="text-primary relative inline-block">future
