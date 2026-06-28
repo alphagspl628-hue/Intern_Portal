@@ -105,6 +105,10 @@
 .side-logout:hover { background: #fdeceb; border-color: #e7b7b3; color: #b53b2f; }
 .side-logout .material-symbols-outlined { font-size: 20px; }
 
+.brand-lockup { display: flex; align-items: center; gap: 12px; }
+.hamburger { display: none; background: none; border: none; cursor: pointer; color: var(--gspl); padding: 6px; border-radius: 8px; transition: background 0.2s; }
+.hamburger:hover { background: var(--gspl-soft); }
+
 /* Main content area */
 .admin-main { padding: 30px 36px 48px; max-width: 1500px; }
 .topbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 26px; }
@@ -377,24 +381,29 @@
   /* Adjust top bars */
   .dash-header, .topbar { flex-direction: column; align-items: flex-start; gap: 12px; }
   
-  /* Make the sidebar a sleek horizontal scrollable navigation */
+  /* Hamburger Sidebar Menu */
   .admin-shell { display: flex; flex-direction: column; }
   .sidebar { 
     position: sticky; top: 0; height: auto; z-index: 1000; background: #fff;
-    display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; 
-    gap: 8px; border-right: none; border-bottom: 1px solid #efeae9; 
-    padding: 10px 15px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    display: flex; flex-direction: column; align-items: stretch; 
+    border-right: none; border-bottom: 1px solid #efeae9; 
+    padding: 10px 15px; overflow: hidden;
   }
-  .sidebar::-webkit-scrollbar { display: none; }
   
   .sidebar-brand { 
-    border-bottom: none; margin-bottom: 0; padding: 0 12px 0 0; 
-    border-right: 1px solid #f1ecec; margin-right: 5px; flex: 0 0 auto;
+    border-bottom: none; margin-bottom: 0; padding: 0; 
+    display: flex; justify-content: space-between; align-items: center;
   }
-  .side-nav { display: flex; flex-direction: row; flex-wrap: nowrap; flex: 0 0 auto; gap: 6px; }
-  .side-nav-label { display: none; }
-  .side-link { width: auto; white-space: nowrap; padding: 8px 12px; }
-  .side-logout { width: auto; margin-top: 0; white-space: nowrap; margin-left: 10px; flex: 0 0 auto; }
+  
+  .hamburger { display: inline-flex; }
+  
+  .side-nav { display: none; flex-direction: column; gap: 6px; margin-top: 15px; }
+  .side-nav-label { display: block; }
+  .side-link { width: 100%; white-space: normal; padding: 11px 12px; }
+  .side-logout { display: none; width: 100%; margin-top: 15px; margin-left: 0; }
+
+  .sidebar.open .side-nav, .sidebar.open .side-logout { display: flex; }
+  .sidebar.open { border-bottom-width: 2px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
   
   /* Reduce Paddings & prevent overflow */
   .admin-main { padding: 15px 10px; overflow-x: hidden; }

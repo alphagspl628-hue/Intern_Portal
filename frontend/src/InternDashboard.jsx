@@ -14,6 +14,7 @@ const InternDashboard = () => {
   const [error, setError] = useState('');
   const [notFound, setNotFound] = useState(false);
   const [tab, setTab] = useState('Dashboard');
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const load = async (background = false) => {
     try {
@@ -231,13 +232,18 @@ const InternDashboard = () => {
 
   return (
     <div className="admin-shell">
-      <aside className="sidebar">
+      <aside className={`sidebar ${menuOpen ? 'open' : ''}`}>
         <div className="sidebar-brand">
-          <span className="brand-mark">GS</span>
-          <div className="brand-text">
-            <span className="brand-name">Genius Softtech</span>
-            <span className="brand-sub">Intern Portal</span>
+          <div className="brand-lockup">
+            <span className="brand-mark">GS</span>
+            <div className="brand-text">
+              <span className="brand-name">Genius Softtech</span>
+              <span className="brand-sub">Intern Portal</span>
+            </div>
           </div>
+          <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+            <span className="material-symbols-outlined">{menuOpen ? 'close' : 'menu'}</span>
+          </button>
         </div>
 
         <nav className="side-nav">
@@ -246,7 +252,7 @@ const InternDashboard = () => {
             <button
               key={t.key}
               className={tab === t.key ? 'side-link active' : 'side-link'}
-              onClick={() => setTab(t.key)}
+              onClick={() => { setTab(t.key); setMenuOpen(false); }}
             >
               <span className="material-symbols-outlined">{t.icon}</span>
               <span>{t.key}</span>
